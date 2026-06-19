@@ -147,9 +147,15 @@ function applyMode(forceNewExam = false) {
     visibleQuestions = allQuestions.filter((q) => course === 'all' || q.courseId === course);
   }
 
-  navigationEl.style.display = visibleQuestions.length > 0 ? 'flex' : 'none';
-  renderSummary();
-  renderSingleQuestion();
+  // Only show navigation in exam mode
+  navigationEl.style.display = mode === 'exam' && visibleQuestions.length > 0 ? 'flex' : 'none';
+  
+  if (mode === 'exam') {
+    renderSummary();
+    renderSingleQuestion();
+  } else {
+    renderAllQuestions();
+  }
 }
 
 function createExamSet(courseFilter) {
@@ -185,7 +191,7 @@ function renderSummary() {
   const current = currentQuestionIndex + 1;
 
   if (mode !== 'exam') {
-    summaryEl.textContent = `Ερώτηση ${current} από ${total}`;
+    summaryEl.textContent = `Σύνολο ερωτήσεων: ${total}`;
     return;
   }
 
@@ -231,6 +237,39 @@ function renderSingleQuestion() {
 
   updateCardFeedback(q, card, feedbackEl);
   questionListEl.appendChild(card);
+}
+
+function renderAllQuestions() {
+  questionListEl.replaceChildren();
+  summaryEl.textContent = `Σύνολο ερωτήσεων: ${visibleQuestions.length}`;
+
+  if (visibleQuestions.length === 0) return;
+
+  visibleQuestions.forEach((q, index) => {
+    const card = questionTemplate.content.firstElementChild.cloneNode(true);
+    card.querySelector('.badge').textContent = `${COURSE_LABELS[q.courseId] || q.courseTitle} • #${q.courseQuestionNumber || q.id}`;
+    card.querySelector('h2').textContent = `${index + 1}. ${q.question}`;
+
+    const choicesEl = card.querySelector('.choices');
+    const feedbackEl = card.querySelector('.feedback');
+
+    q.options.forEach((optionText, optionIndex) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'choice-btn';
+      btn.textContent = `${String.fromCharCode(65 + optionIndex)}) ${optionText}`;
+
+      btn.addEventListener('click', () => {
+        selectedAnswers.set(q.id, optionIndex);
+        updateCardFeedback(q, card, feedbackEl);
+      });
+
+      choicesEl.appendChild(btn);
+    });
+
+    updateCardFeedback(q, card, feedbackEl);
+    questionListEl.appendChild(card);
+  });
 }
 
 function updateNavigationButtons() {
