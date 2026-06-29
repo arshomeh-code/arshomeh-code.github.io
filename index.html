@@ -48,6 +48,21 @@
           <button id="startBtn" type="button">Εφαρμογή</button>
           <button id="resetExamBtn" type="button">Νέα κλήρωση εξέτασης</button>
         </div>
+
+        <div class="row" id="jumpToQuestionRow" style="display: none;">
+          <label for="jumpInput">Πήγαινε στην ερώτηση</label>
+          <div style="display: flex; gap: 8px; flex: 1;">
+            <input
+              type="number"
+              id="jumpInput"
+              placeholder="Αριθμός ερώτησης"
+              min="1"
+              style="flex: 1; padding: 8px; font-size: 14px;"
+            />
+            <button id="jumpBtn" type="button" style="padding: 8px 16px;">Πήγαινε</button>
+          </div>
+          <p id="jumpMessage" style="color: #d32f2f; margin: 4px 0; font-size: 12px; display: none;"></p>
+        </div>
       </section>
 
       <section class="summary" id="summary" aria-live="polite"></section>
@@ -59,6 +74,8 @@
         <button id="nextBtn" type="button">Επόμενη →</button>
       </div>
     </main>
+
+    <button id="topBtn" type="button" style="display: none;">⬆ Κορυφή</button>
 
     <template id="questionTemplate">
       <article class="question-card">

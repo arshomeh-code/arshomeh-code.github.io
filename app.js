@@ -9,6 +9,11 @@ const questionTemplate = document.getElementById('questionTemplate');
 const navigationEl = document.getElementById('navigation');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const jumpToQuestionRow = document.getElementById('jumpToQuestionRow');
+const jumpInput = document.getElementById('jumpInput');
+const jumpBtn = document.getElementById('jumpBtn');
+const topBtn = document.getElementById('topBtn');
+const jumpMessage = document.getElementById('jumpMessage');
 
 const COURSE_LABELS = {
   mixed: 'Μεικτό (Mixed)',
@@ -70,6 +75,22 @@ function initializeApp() {
       currentQuestionIndex++;
       renderSingleQuestion();
     }
+  });
+  
+  jumpBtn.addEventListener('click', () => {
+    const questionNumber = parseInt(jumpInput.value, 10);
+    jumpToQuestion(questionNumber);
+  });
+  
+  jumpInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const questionNumber = parseInt(jumpInput.value, 10);
+      jumpToQuestion(questionNumber);
+    }
+  });
+  
+  topBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 
@@ -140,6 +161,8 @@ function applyMode(forceNewExam = false) {
 
   selectedAnswers.clear();
   currentQuestionIndex = 0;
+  jumpInput.value = '';
+  hideJumpMessage();
 
   if (mode === 'exam') {
     visibleQuestions = createExamSet(course, forceNewExam);
@@ -149,6 +172,10 @@ function applyMode(forceNewExam = false) {
 
   // Only show navigation in exam mode
   navigationEl.style.display = mode === 'exam' && visibleQuestions.length > 0 ? 'flex' : 'none';
+  // Show jump-to-question row in 'all' mode
+  jumpToQuestionRow.style.display = mode === 'all' && visibleQuestions.length > 0 ? 'block' : 'none';
+  // Show top button in 'all' mode
+  topBtn.style.display = mode === 'all' && visibleQuestions.length > 0 ? 'block' : 'none';
   
   if (mode === 'exam') {
     renderSummary();
@@ -322,4 +349,34 @@ function shuffle(arr) {
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
+}
+
+function jumpToQuestion(questionNumber) {
+  hideJumpMessage();
+  
+  if (!questionNumber || questionNumber < 1 || questionNumber > visibleQuestions.length) {
+    showJumpMessage(`❌ Άκυρη ερώτηση. Παρακαλώ εισάγετε έναν αριθμό μεταξύ 1 και ${visibleQuestions.length}`);
+    return;
+  }
+  
+  const questionCard = document.querySelectorAll('.question-card')[questionNumber - 1];
+  if (questionCard) {
+    questionCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Add a highlight effect
+    questionCard.classList.add('highlight');
+    setTimeout(() => {
+      questionCard.classList.remove('highlight');
+    }, 2000);
+    jumpInput.value = '';
+  }
+}
+
+function showJumpMessage(message) {
+  jumpMessage.textContent = message;
+  jumpMessage.style.display = 'block';
+}
+
+function hideJumpMessage() {
+  jumpMessage.style.display = 'none';
+  jumpMessage.textContent = '';
 }

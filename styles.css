@@ -216,3 +216,65 @@ button:hover {
     padding: 10px;
   }
 }
+
+.question-card.highlight {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  animation: highlightPulse 0.6s ease;
+}
+
+@keyframes highlightPulse {
+  0% {
+    background-color: #ffe082;
+  }
+  100% {
+    background-color: #fff3cd;
+  }
+}
+
+#jumpInput {
+  padding: 8px;
+  font-size: 14px;
+}
+
+#jumpBtn {
+  background: var(--accent);
+  color: #f1fff6;
+  border-color: #1a5f3f;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+#jumpBtn:hover {
+  background: #1a5f3f;
+  border-color: #0f4d31;
+}
+
+#jumpMessage {
+  color: #d32f2f;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+#topBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: #f1fff6;
+  border: 1px solid #1a5f3f;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(31, 111, 74, 0.2);
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+#topBtn:hover {
+  background: #1a5f3f;
+  border-color: #0f4d31;
+  box-shadow: 0 6px 16px rgba(31, 111, 74, 0.3);
+}
